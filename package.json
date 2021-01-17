@@ -1,0 +1,23 @@
+{
+  "name": "music-player-backend",
+  "version": "1.0.0",
+  "description": "A backend application that utilizes the Spotify OAuth API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "spotify",
+    "OAuth"
+  ],
+  "author": "Sofia Ling",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.16.3",
+    "querystring": "^0.2.0",
+    "request": "^2.88.2"
+  }
+}
