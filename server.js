@@ -5,13 +5,27 @@ const querystring = require('querystring');
 const app = express();
 
 const redirect_uri = process.env.REDIRECT_URI || 'http://localhost:8888/callback';
+const scopes = [
+  'playlist-read-private',
+  'user-library-read',
+  'user-follow-modify',
+  'user-follow-read',
+  'user-read-private',
+  'user-read-currently-playing',
+  'user-read-recently-played',
+  'user-read-playback-state',
+  'user-top-read',
+  'user-modify-playback-state',
+  'user-read-email',
+  'streaming',
+];
 
 app.get('/login', (req, res) => {
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
-      client_id: process.env.CLIENT_ID || "25bd114c95bb448b843388acc61cb7c7",
-      scope: 'user-read-private user-read-email',
+      client_id: process.env.CLIENT_ID,
+      scope: scopes.join('%20'),
       redirect_uri
     }));
 });
@@ -36,8 +50,10 @@ app.get('/callback', (req, res) => {
   request.post(authOptions, (error, response, body) => {
     const access_token = body.access_token;
     const refresh_token = body.refresh_token;
+    const expires_in = body.expires_in;
     const uri = process.env.FRONTEND_URI || 'http://localhost:3000';
-    res.redirect(uri + '?access_token=' + access_token);
+    // res.redirect(uri + '?access_token=' + access_token + '&refresh_token=' + refresh_token);
+    res.redirect(`${uri}?access_token=${access_token}&refresh_token=${refresh_token}&expires_in=${expires_in}`);
   });
 });
 
@@ -47,7 +63,7 @@ app.get('/refresh_token', (req, res) => {
     url: 'https://accounts.spotify.com/api/token',
     form: {
       grant_type: 'refresh_token',
-      refresh_token: refresh_token
+      refresh_token
     },
     headers: {
       'Authorization': 'Basic ' + (new Buffer.from(
