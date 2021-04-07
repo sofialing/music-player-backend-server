@@ -7,6 +7,7 @@ const app = express();
 const redirect_uri = process.env.REDIRECT_URI || 'http://localhost:8888/callback';
 const scopes = [
   'playlist-read-private',
+  'playlist-read-collaborative',
   'user-library-read',
   'user-follow-modify',
   'user-follow-read',
