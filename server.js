@@ -1,8 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const request = require('request');
+const cors = require('cors');
 const querystring = require('querystring');
 const app = express();
+
+app.use(cors());
 
 const redirect_uri = process.env.REDIRECT_URI || 'http://localhost:8888/callback';
 const scopes = [
@@ -74,11 +77,13 @@ app.get('/refresh_token', (req, res) => {
     json: true
   };
 
-  request.post(authOptions, (error, response, body) => {
+  request.post(authOptions, function (error, response, body) {
+    console.log('body', body);
     if (!error && response.statusCode === 200) {
-      const access_token = body.access_token;
-      const uri = process.env.FRONTEND_URI || 'http://localhost:3000';
-      res.redirect(uri + '?access_token=' + access_token);
+      const { access_token, expires_in } = body;
+      res.send({
+        access_token, expires_in
+      });
     }
   });
 });
