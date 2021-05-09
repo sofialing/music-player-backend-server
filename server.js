@@ -54,10 +54,9 @@ app.get('/callback', (req, res) => {
   request.post(authOptions, (error, response, body) => {
     const access_token = body.access_token;
     const refresh_token = body.refresh_token;
-    const expires_in = body.expires_in;
+    const expires_at = (body.expires_in * 1000) + new Date().getTime()
     const uri = process.env.FRONTEND_URI || 'http://localhost:3000';
-    // res.redirect(uri + '?access_token=' + access_token + '&refresh_token=' + refresh_token);
-    res.redirect(`${uri}?access_token=${access_token}&refresh_token=${refresh_token}&expires_in=${expires_in}`);
+    res.redirect(`${uri}?access_token=${access_token}&refresh_token=${refresh_token}&expires_at=${expires_at}`);
   });
 });
 
@@ -82,7 +81,8 @@ app.get('/refresh_token', (req, res) => {
     if (!error && response.statusCode === 200) {
       const { access_token, expires_in } = body;
       res.send({
-        access_token, expires_in
+        access_token,
+        expires_at: (expires_in * 1000) + new Date().getTime()
       });
     }
   });
