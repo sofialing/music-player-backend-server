@@ -77,7 +77,6 @@ app.get('/refresh_token', (req, res) => {
   };
 
   request.post(authOptions, function (error, response, body) {
-    console.log('body', body);
     if (!error && response.statusCode === 200) {
       const { access_token, expires_in } = body;
       res.send({
